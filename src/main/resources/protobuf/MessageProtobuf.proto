@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_package = "com.pjzhong.chat.protobuf";
+option java_outer_classname = "MessageProtobuf";
+
+message Msg {
+    Head head = 1;//消息头
+    string body = 2;//消息体
+}
+
+message Head {
+    int32 type = 1;//消息类型
+    int64 times = 2;// 消息时间戳
+    string from = 3;//发送者Id
+    string to = 4;//接收者Id
+    string extend = 5;// 扩展字段
+}
