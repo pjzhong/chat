@@ -9,6 +9,8 @@ import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
 import io.netty.handler.flush.FlushConsolidationHandler;
+import io.netty.handler.timeout.IdleStateHandler;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author zhongjp
@@ -31,6 +33,12 @@ public class SimpleChatServerInitializer extends ChannelInitializer<SocketChanne
         0, 2, 0, 2));
     pipeline.addLast("decoder", new ProtobufEncoder());
     pipeline.addLast("encoder", new ProtobufDecoder(MessageProtobuf.Msg.getDefaultInstance()));
+
+    // 3次心跳没响应，代表连接已断开
+    pipeline.addFirst("idleState", new IdleStateHandler(
+        0, 0, 1,
+        TimeUnit.MINUTES));
+    pipeline.addLast("heartbeat", new HeartbeatHandler());
     pipeline.addLast("auth", new SimpleNameHandle(server));
     pipeline.addLast("handler", new SimpleChatServerHandler(server));
   }

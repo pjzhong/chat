@@ -13,4 +13,6 @@ public interface TcpClient {
   boolean isClosed();
 
   void sendMsg(MessageProtobuf.Msg msg);
+
+  void execute(Runnable runnable);
 }
