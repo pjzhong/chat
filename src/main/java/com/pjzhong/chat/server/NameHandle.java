@@ -6,11 +6,11 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.util.internal.StringUtil;
 
-public class SimpleNameHandle extends SimpleChannelInboundHandler<Msg> {
+public class NameHandle extends SimpleChannelInboundHandler<Msg> {
 
-  private SimpleChatServer chatServer;
+  private ChatServer chatServer;
 
-  public SimpleNameHandle(SimpleChatServer chatServer) {
+  public NameHandle(ChatServer chatServer) {
     this.chatServer = chatServer;
   }
 

@@ -146,7 +146,7 @@ public class NettyTcpClient implements TcpClient {
           .option(ChannelOption.TCP_NODELAY, true)
           // 连接超时
           .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 200)
-          .handler(new SimpleChatClientInitializer(client));
+          .handler(new ChatClientInitializer(client));
     }
   }
 

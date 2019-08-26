@@ -16,11 +16,11 @@ import java.util.concurrent.TimeUnit;
  * @author zhongjp
  * @since 2018/7/6
  */
-public class SimpleChatServerInitializer extends ChannelInitializer<SocketChannel> {
+public class ChatServerInitializer extends ChannelInitializer<SocketChannel> {
 
-  private SimpleChatServer server;
+  private ChatServer server;
 
-  public SimpleChatServerInitializer(SimpleChatServer server) {
+  public ChatServerInitializer(ChatServer server) {
     this.server = server;
   }
 
@@ -34,12 +34,10 @@ public class SimpleChatServerInitializer extends ChannelInitializer<SocketChanne
     pipeline.addLast("decoder", new ProtobufEncoder());
     pipeline.addLast("encoder", new ProtobufDecoder(MessageProtobuf.Msg.getDefaultInstance()));
 
-    // 3次心跳没响应，代表连接已断开
-    pipeline.addFirst("idleState", new IdleStateHandler(
-        0, 0, 1,
-        TimeUnit.MINUTES));
+    //1分钟无任何读写,当作关闭
+    pipeline.addFirst("idleState", new IdleStateHandler(0, 0, 1, TimeUnit.MINUTES));
     pipeline.addLast("heartbeat", new HeartbeatHandler());
-    pipeline.addLast("auth", new SimpleNameHandle(server));
-    pipeline.addLast("handler", new SimpleChatServerHandler(server));
+    pipeline.addLast("auth", new NameHandle(server));
+    pipeline.addLast("handler", new ChatServerHandler(server));
   }
 }

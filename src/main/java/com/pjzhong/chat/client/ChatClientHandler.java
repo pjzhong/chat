@@ -8,7 +8,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
  * @author zhongjp
  * @since 2018/7/6
  */
-public class SimpleChatClientHandler extends SimpleChannelInboundHandler<Msg> {
+public class ChatClientHandler extends SimpleChannelInboundHandler<Msg> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Msg msg) throws Exception {

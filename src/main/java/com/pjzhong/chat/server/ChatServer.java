@@ -16,16 +16,16 @@ import io.netty.util.concurrent.GlobalEventExecutor;
  * @author zhongjp
  * @since 2018/7/6
  */
-public class SimpleChatServer {
+public class ChatServer {
 
   private int port = 8888;
   private static ChannelGroup channels;
   private ServerBootstrap bootstrap;
 
-  public SimpleChatServer() {
+  public ChatServer() {
   }
 
-  public SimpleChatServer(int port) {
+  public ChatServer(int port) {
     this.port = port;
   }
 
@@ -37,10 +37,10 @@ public class SimpleChatServer {
     bootstrap = new ServerBootstrap();
     bootstrap.group(bossGroup, workerGroup)
         .channel(NioServerSocketChannel.class)
-        .childHandler(new SimpleChatServerInitializer(this))
+        .childHandler(new ChatServerInitializer(this))
         .option(ChannelOption.SO_BACKLOG, 128)
         .childOption(ChannelOption.SO_KEEPALIVE, true);
-    System.out.println("SimpleChatServer has started");
+    System.out.println("ChatServer has started");
 
     ChannelFuture f = bootstrap.bind(port).sync();
     f.channel().closeFuture().sync();
@@ -67,7 +67,7 @@ public class SimpleChatServer {
   }
 
   public static void main(String[] args) throws Exception {
-    SimpleChatServer chatServer = new SimpleChatServer();
+    ChatServer chatServer = new ChatServer();
     chatServer.run();
 
     Runtime.getRuntime().addShutdownHook(new Thread(chatServer::close));

@@ -10,11 +10,11 @@ import io.netty.util.Attribute;
  * @author zhongjp
  * @since 2018/7/6
  */
-public class SimpleChatServerHandler extends SimpleChannelInboundHandler<Msg> {
+public class ChatServerHandler extends SimpleChannelInboundHandler<Msg> {
 
-  private SimpleChatServer server;
+  private ChatServer server;
 
-  public SimpleChatServerHandler(SimpleChatServer server) {
+  public ChatServerHandler(ChatServer server) {
     this.server = server;
   }
 
