@@ -2,6 +2,7 @@ package com.pjzhong.chat.common;
 
 public enum MsgType {
 
+  AUTH(110),
   HEART_BEAT(120);
 
   MsgType(int type) {

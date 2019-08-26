@@ -11,6 +11,7 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author zhongjp
@@ -21,6 +22,7 @@ public class NettyTcpClient implements TcpClient {
   private Bootstrap bootstrap;
   private Channel channel;
   private boolean isClosed;
+  private AtomicBoolean reconnecting;
   private ExecutorService worker;
 
   private final String host;
@@ -34,14 +36,19 @@ public class NettyTcpClient implements TcpClient {
   @Override
   public void init() {
     worker = Executors.newSingleThreadExecutor();
-    resetConnect();
+    reconnecting = new AtomicBoolean();
+    reConnect();
   }
 
   @Override
-  public void resetConnect() {
-    if (!isClosed) {
-      worker.execute(this::closeChannel);
-      worker.execute(new ReconnectRunnable(this));
+  public void reConnect() {
+    if (reconnecting.compareAndSet(Boolean.FALSE, Boolean.TRUE)) {
+      if (isClosed) {
+        reconnecting.set(false);
+      } else {
+        worker.execute(this::closeChannel);
+        worker.execute(new ReconnectRunnable(this));
+      }
     }
   }
 
@@ -73,13 +80,9 @@ public class NettyTcpClient implements TcpClient {
 
   private void closeChannel() {
     if (channel != null) {
-      try {
-        channel.close();
-        channel.eventLoop().shutdownGracefully().await();
-        channel = null;
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      }
+      channel.close();
+      channel.eventLoop().shutdownGracefully();
+      channel = null;
     }
   }
 
@@ -117,13 +120,7 @@ public class NettyTcpClient implements TcpClient {
     private boolean connectServer() {
       boolean suc = true;
       try {
-        if (bootstrap != null) {
-          try {
-            bootstrap.config().group().shutdownGracefully();
-          } finally {
-            bootstrap = null;
-          }
-        }
+        cleanBootstrap();
         initBootstrap();
         channel = bootstrap.connect(host, port).sync().channel();
         System.out.format("connect to server-%s:%s success%n", host, port);
@@ -131,6 +128,10 @@ public class NettyTcpClient implements TcpClient {
         System.err.format("connect to server-%s:%s failed%n", host, port);
         channel = null;
         suc = false;
+      } finally {
+        if (suc) {
+          reconnecting.set(false);
+        }
       }
       return suc;
     }

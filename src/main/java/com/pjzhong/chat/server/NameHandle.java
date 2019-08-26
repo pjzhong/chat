@@ -1,5 +1,7 @@
 package com.pjzhong.chat.server;
 
+import static com.pjzhong.chat.common.MsgType.AUTH;
+
 import com.pjzhong.chat.protobuf.MessageProtobuf.Msg;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,6 +33,7 @@ public class NameHandle extends SimpleChannelInboundHandler<Msg> {
       } else {
         chatServer.addChannel(channel);
         channel.attr(ServerConst.NAME).set(msg.getBody());
+        channel.writeAndFlush(Msg.newBuilder().setType(AUTH.getPush()).build());
         String join = "------------------------------------------------------\n"
             + String.format("[SERVER] - Welcome %s, %d person(s) in this room\n",
             msg.getBody(), chatServer.onLine())

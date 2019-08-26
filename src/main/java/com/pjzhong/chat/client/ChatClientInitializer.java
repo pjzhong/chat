@@ -8,8 +8,6 @@ import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
 import io.netty.handler.codec.LengthFieldPrepender;
 import io.netty.handler.codec.protobuf.ProtobufDecoder;
 import io.netty.handler.codec.protobuf.ProtobufEncoder;
-import io.netty.handler.timeout.IdleStateHandler;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author zhongjp
@@ -30,11 +28,7 @@ public class ChatClientInitializer extends ChannelInitializer<SocketChannel> {
     pipeline.addLast("frameDecoder", new LengthFieldBasedFrameDecoder(65535, 0, 2, 0, 2));
     pipeline.addLast("decoder", new ProtobufEncoder());
     pipeline.addLast("encoder", new ProtobufDecoder(MessageProtobuf.Msg.getDefaultInstance()));
-    // 3次心跳没响应，代表连接已断开
-    pipeline.addFirst("idleState", new IdleStateHandler(
-        ClientCons.HEART_BEAT_INTERVAL * 3, ClientCons.HEART_BEAT_INTERVAL, 0,
-        TimeUnit.MILLISECONDS));
-    pipeline.addLast("heartbeat", new HeartbeatHandler(tcpClient));
+    pipeline.addLast(HeartbeatHandler.class.getSimpleName(), new HeartbeatHandler(tcpClient));
     pipeline.addLast("handler", new ChatClientHandler());
   }
 }

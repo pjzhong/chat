@@ -6,7 +6,7 @@ public interface TcpClient {
 
   void init();
 
-  void resetConnect();
+  void reConnect();
 
   void close();
 
