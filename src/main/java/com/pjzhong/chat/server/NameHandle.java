@@ -37,7 +37,7 @@ public class NameHandle extends SimpleChannelInboundHandler<Msg> {
             + "------------------------------------------------------";
         chatServer.boardCast(Msg.newBuilder().setBody(join).build());
         System.out
-            .format("NettyTcpClient:%s-%s is connected\n", channel.remoteAddress(), msg.getBody());
+            .format("NettyTcpClient:%s-%s is online\n", channel.remoteAddress(), msg.getBody());
       }
     }
   }

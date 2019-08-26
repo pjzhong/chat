@@ -27,23 +27,13 @@ public class ChatServerHandler extends SimpleChannelInboundHandler<Msg> {
   }
 
   @Override
-  public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    System.out.format("NettyTcpClient:%s online\n", ctx.channel().remoteAddress());
-  }
-
-  @Override
-  public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+  public void channelInactive(ChannelHandlerContext ctx) {
     Attribute<String> name = ctx.channel().attr(ServerConst.NAME);
     System.out
         .format("NettyTcpClient:%s-%s offline\n", ctx.channel().remoteAddress(), name.get());
-  }
 
-
-  @Override
-  public void handlerRemoved(ChannelHandlerContext ctx) {
     Channel incoming = ctx.channel();
     if (incoming.hasAttr(ServerConst.NAME)) {
-      Attribute<String> name = incoming.attr(ServerConst.NAME);
       String sb = "------------------------------------------------------\n"
           + String.format("[SERVER] - %s  is leaved, %d person(s) in this room\n",
           name.get(), server.onLine())

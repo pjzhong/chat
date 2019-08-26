@@ -50,13 +50,13 @@ public class NettyTcpClient implements TcpClient {
     if (isClosed) {
       return;
     }
+    isClosed = true;
     if (worker != null) {
       worker.execute(this::closeChannel);
       worker.execute(this::cleanBootstrap);
       closeExecutor(worker);
     }
     worker = null;
-    isClosed = true;
     System.out.println("TCP Client closed");
   }
 
@@ -94,7 +94,7 @@ public class NettyTcpClient implements TcpClient {
 
     private TcpClient client;
 
-    public ReconnectRunnable(TcpClient client) {
+    ReconnectRunnable(TcpClient client) {
       this.client = client;
     }
 
@@ -172,10 +172,13 @@ public class NettyTcpClient implements TcpClient {
     Runtime.getRuntime().addShutdownHook(new Thread(client::close));
     Thread t = new Thread(() -> {
       try (Scanner s = new Scanner(System.in)) {
-        Msg msg = Msg.newBuilder()
-            .setBody(s.nextLine())
-            .build();
-        client.sendMsg(msg);
+        while (true) {
+          String str = s.nextLine();
+          Msg msg = Msg.newBuilder()
+              .setBody(str)
+              .build();
+          client.sendMsg(msg);
+        }
       }
     });
     t.setDaemon(true);

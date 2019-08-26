@@ -5,9 +5,10 @@ option java_outer_classname = "MessageProtobuf";
 
 message Msg {
      int32 type = 1;//消息类型
-     int64 times = 2;// 消息时间戳
-     string from = 3;//发送者Id
-     string to = 4;//接收者Id
-     string extend = 5;// 扩展字段
-     string body = 6;//消息体
+     int32 state = 2;//消息状态
+     int64 times = 3;// 消息时间戳
+     string from = 4;//发送者Id
+     string to = 5;//接收者Id
+     string extend = 6;// 扩展字段
+     string body = 7;//消息体
 }
