@@ -15,7 +15,7 @@
     <netty.version>4.1.50.Final</netty.version>
     <google.protobuf>3.9.1</google.protobuf>
     <hamcrest>2.1</hamcrest>
-    <fastJson>1.2.58</fastJson>
+    <fastJson>1.2.83</fastJson>
   </properties>
 
   <dependencies>
