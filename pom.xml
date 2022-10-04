@@ -13,7 +13,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <junit.jupiter.version>5.5.1</junit.jupiter.version>
     <netty.version>4.1.50.Final</netty.version>
-    <google.protobuf>3.9.1</google.protobuf>
+    <google.protobuf>3.16.3</google.protobuf>
     <hamcrest>2.1</hamcrest>
     <fastJson>1.2.58</fastJson>
   </properties>
